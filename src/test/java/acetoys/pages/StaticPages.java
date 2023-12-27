@@ -1,10 +1,6 @@
 package acetoys.pages;
 
 import io.gatling.javaapi.core.ChainBuilder;
-
-import io.gatling.javaapi.core.ChainBuilder;
-import org.checkerframework.checker.units.qual.C;
-
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 

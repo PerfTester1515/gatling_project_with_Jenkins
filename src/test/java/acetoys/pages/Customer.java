@@ -1,7 +1,7 @@
 package acetoys.pages;
 
 import io.gatling.javaapi.core.ChainBuilder;
-import io.gatling.javaapi.core.Choice;;
+import io.gatling.javaapi.core.Choice;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
