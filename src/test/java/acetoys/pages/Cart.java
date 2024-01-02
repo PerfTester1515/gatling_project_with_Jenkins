@@ -3,26 +3,35 @@ package acetoys.pages;
 import io.gatling.javaapi.core.ChainBuilder;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
+import static acetoys.session.UserSession.*;
 
 public class Cart {
     public static  ChainBuilder ViewCart =
-        exec(
+        doIf(session -> !session.getBoolean("sCustomerLoggedIn"))
+        .then(exec(Customer.LoginCustomer))
+        .exec(
             http("12_ViewCart")
             .get("/cart/view")
- //           .check(css("#CategoryHeader").is("Cart Overview"))
+            .check(css("#CategoryHeader").is("Cart Overview"))
         );
 
     public static  ChainBuilder IncreaseQuantityInCart =
-        exec(
-            http("14_AddQuantityInCart - Product 19")
-            .get("/cart/add/19?cartPage=true")
-        );
+        exec(IncreaseItemsInBasketForSession)
+        .exec(IncreaseSessionBasketTotal)
+        .exec(
+            http("14_AddQuantityInCart - Product Name: #{dName}")
+            .get("/cart/add/#{dId}?cartPage=true")
+            .check(css("#grandTotal").isEL("$#{sBasketTotal}"))
+        )
+        .exec(IncreaseSessionBasketTotal);
 
 
-    public static  ChainBuilder DecreaseeQuantityInCart =
-        exec(
-            http("16_SubtractQuantityInCart - Product 19")
-            .get("/cart/subtract/19")
+    public static  ChainBuilder DecreaseQuantityInCart =
+        exec(DecreaseItemsInBasketForSession)
+        .exec(
+            http("16_SubtractQuantityInCart - Product Name: #{dName}")
+            .get("/cart/subtract/#{dId}")
+            .check(css("#grandTotal").isEL("$#{sBasketTotal}"))
         );
 
     public static  ChainBuilder CheckoutCart =

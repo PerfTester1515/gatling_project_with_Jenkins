@@ -1,35 +1,46 @@
 package acetoys.pages;
 
-import io.gatling.javaapi.core.ChainBuilder;;
+import io.gatling.javaapi.core.ChainBuilder;
+import io.gatling.javaapi.core.FeederBuilder;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
+import static acetoys.session.UserSession.*;
 
 
 public class Products {
-    public static ChainBuilder LoadProductsDetailsPage_Dartboards =
-            exec(
-                http("07_LoadProductsDetailsPage - Product: DartsBoard")
-                .get("/product/darts-board")
-                .check(css("#ProductDescription").is("Get all your mates round for a few drinks and throw sharp objects at this darts board"))
+
+    private static final FeederBuilder<Object> ProductFeeder =
+        jsonFile("data/ProductDetails.json").random();
+
+    public static ChainBuilder LoadProductsDetailsPage =
+            feed(ProductFeeder)
+            .exec(session -> {
+                    System.out.println("*****ProductInfo -  " + session.getString("dName") +
+                        ": " + session.getString("dSlug"));
+                    return session;
+                }
+            )
+            .exec(
+                http("07_LoadProductsDetailsPage - Product: #{dName}")
+                .get("/product/#{dSlug}")
+                .check(css("#ProductDescription").isEL("#{dDescription}"))
             );
 
-    public static ChainBuilder AddProductToCart_Product19 =
-            exec(
-                http("08_AddProductToCart - Product 19")
-                .get("/cart/add/19")
-                .check(substring("You have <span>1</span> products in your Basket."))
-            );
-    public static ChainBuilder AddProductToCart_Product4 =
-            exec(
-                http("08_AddProductToCart - Product 4")
-                .get("/cart/add/4")
-                .check(substring("products in your Basket"))
-            );
-    public static ChainBuilder AddProductToCart_Product5 =
-            exec(
-                http("08_AddProductToCart - Product 5")
-                .get("/cart/add/5")
-                .check(substring("products in your Basket"))
-            );
+    public static ChainBuilder AddProductToCart =
+             exec(IncreaseItemsInBasketForSession)
+             .exec(
+                http("08_AddProductToCart - #{dName}")
+                .get("/cart/add/#{dId}")
+                .check(substring("You have <span>#{sItemsInBasket}</span>"))   //
+                    .check(bodyString().saveAs("sResponseBody"))
+            )
+             .exec(IncreaseSessionBasketTotal)
+             .exec(session -> {
+                 System.out.println("*****ProductInfo -  " + session.getString("dName") +
+                     ": " + session.getString("dId"));
+                 System.out.println(session.getString("sResponseBody"));
+                 System.out.println(session);
+                 return session;
+             });
 }

@@ -1,36 +1,54 @@
 package acetoys.pages;
 
 import io.gatling.javaapi.core.ChainBuilder;
+import io.gatling.javaapi.core.FeederBuilder;
+
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+import java.util.*;
 
 public class Category {
-    public static ChainBuilder ProductListByCategory_AllProducts =
-        exec(
-            http("04_LoadProductsListPage - Category: AllProducts")
-            .get("/category/all")
-            .check(css("#CategoryName").is("All Products"))
-        );
+    private static final FeederBuilder<String> CategoryFeeder =
+        csv("data/CategoryDetails.csv").circular();
+    public static ChainBuilder ProductListByCategory =
+        feed(CategoryFeeder)
+        .exec(
+            http("04_LoadProductsListPage - Category: #{dCategoryName}")
+            .get("/category/#{dCategorySlug}")
+            .check(css("#CategoryName").isEL("#{dCategoryName}"))
+            .check(bodyString().saveAs("sResponseBody")));
+//        .exec(session -> {
+//            System.out.println("Response Body:");
+//            System.out.println(session.getString("sResponseBody"));
+//            return session;
+//        });
 
-    public static ChainBuilder LoadSecondPageOfProducts =
-        exec(
-            http("05_LoadNextPage - Page 1")
-            .get("/category/all?page=1")
-            .check(css(".page-item.active").is("2"))
+    public static ChainBuilder CyclePagesOfProducts =
+        exec(session -> {
+            int vCurrentPageNumber = session.getInt("sProductsListPageNumber");
+            int vTotalPages = session.getInt("dCategoryPages");
+            boolean vMorePages = vCurrentPageNumber < vTotalPages;
+            return session.setAll(Map.of(
+                "sCurrentPageNumber", vCurrentPageNumber,
+                "sNextPageNumber", (vCurrentPageNumber + 1),
+                "sMorePages", vMorePages));
+        })
+        .asLongAs("#{sMorePages}").on(
+            exec(http("Load Page #{sCurrentPageNumber} of Products - Category: #{dCategoryName}")
+                .get("/category/#{dCategorySlug}?page=#{sCurrentPageNumber}")
+                .check(bodyString().saveAs("sResponseBody"))
+                .check(css(".page-item.active").isEL("#{sNextPageNumber}")))
+            .exec(session -> {
+                int vCurrentPageNumber = session.getInt("sCurrentPageNumber") + 1;
+                int vTotalPages = session.getInt("dCategoryPages");
+                boolean vMorePages = (vCurrentPageNumber < vTotalPages);
+//            System.out.println("Response Body:");
+//            System.out.println(session.getString("sResponseBody"));
+                return session.setAll(Map.of(
+                    "sCurrentPageNumber", vCurrentPageNumber,
+                    "sNextPageNumber", (vCurrentPageNumber + 1),
+                    "sMorePages", vMorePages));
+            })
         );
-    public static ChainBuilder LoadThirdPageOfProducts =
-        exec(
-            http("05_LoadNextPage - Page 2")
-            .get("/category/all?page=2")
-            .check(css(".page-item.active").is("3"))
-        );
-
-    public static ChainBuilder ProductListByCategory_BabiesToys =
-        exec(
-            http("04_LoadProductsListPage - Category: BabiesToys")
-            .get("/category/babies-toys")
-            .check(css("#CategoryName").is("Babies Toys"))
-        );
-
 
 }
