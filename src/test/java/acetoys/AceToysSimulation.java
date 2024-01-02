@@ -1,10 +1,10 @@
 package acetoys;
 
-import acetoys.pages.Category;
-import acetoys.pages.StaticPages;
-import acetoys.pages.Products;
-import acetoys.pages.Cart;
-import acetoys.pages.Customer;
+//import acetoys.pages.Category;
+//import acetoys.pages.StaticPages;
+//import acetoys.pages.Products;
+//import acetoys.pages.Cart;
+//import acetoys.pages.Customer;
 
 
 import acetoys.session.UserSession;

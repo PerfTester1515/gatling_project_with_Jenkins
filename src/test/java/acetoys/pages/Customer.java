@@ -2,7 +2,7 @@ package acetoys.pages;
 
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.Choice;
-import io.gatling.javaapi.core.FeederBuilder;
+//import io.gatling.javaapi.core.FeederBuilder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class Customer {
-    private static Iterator<Map<String,Object>> LoginFeeder =
+    private static Iterator<Map<String,Object>> final LoginFeeder =
         Stream.generate((Supplier<Map<String, Object>>) () -> {
             Random rand = new Random();
             int vUserId = rand.nextInt(3)  + 1;
