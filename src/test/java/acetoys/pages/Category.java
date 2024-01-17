@@ -13,15 +13,9 @@ public class Category {
     public static ChainBuilder ProductListByCategory =
         feed(CategoryFeeder)
         .exec(
-            http("04_LoadProductsListPage - Category: #{dCategoryName}")
+            http("LoadProductsListPage")
             .get("/category/#{dCategorySlug}")
-            .check(css("#CategoryName").isEL("#{dCategoryName}"))
-            .check(bodyString().saveAs("sResponseBody")));
-//        .exec(session -> {
-//            System.out.println("Response Body:");
-//            System.out.println(session.getString("sResponseBody"));
-//            return session;
-//        });
+            .check(css("#CategoryName").isEL("#{dCategoryName}")));
 
     public static ChainBuilder CyclePagesOfProducts =
         exec(session -> {
@@ -34,7 +28,7 @@ public class Category {
                 "sMorePages", vMorePages));
         })
         .asLongAs("#{sMorePages}").on(
-            exec(http("Load Page #{sCurrentPageNumber} of Products - Category: #{dCategoryName}")
+            exec(http("Load Page #{sCurrentPageNumber} of Products")
                 .get("/category/#{dCategorySlug}?page=#{sCurrentPageNumber}")
                 .check(bodyString().saveAs("sResponseBody"))
                 .check(css(".page-item.active").isEL("#{sNextPageNumber}")))

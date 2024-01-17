@@ -9,12 +9,16 @@ package acetoys;
 
 import acetoys.session.UserSession;
 
+import acetoys.simulation.TestPopulation;
+import acetoys.simulation.TestScenario;
 import acetoys.simulation.UserJourney;
+import akka.actor.setup.Setup;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+import io.gatling.javaapi.core.PopulationBuilder;
 
 public class AceToysSimulation extends Simulation {
 
@@ -29,55 +33,7 @@ public class AceToysSimulation extends Simulation {
   //cbg - remove userAgent header, acceptHeader
   //cbg - Remove Header Maps
 
-  private final ScenarioBuilder scn = scenario("AceToysSimulation")
-      .exec(UserJourney.BrowseStore);
-//  .exec(UserSession.InitSession)
-//    .exec(StaticPages.HomePage)
-//    .exec(session -> {
-//        System.out.println("*****CSRF_Token: " + session.getString("pCSRF_Token"));
-//        return session;
-//      }
-//    )
-//    .pause(1)
-//    .exec(StaticPages.OurStory)
-//    .pause(1)
-//    .exec(StaticPages.GetInTouch)
-//    .pause(1)
-//    .exec(Category.ProductListByCategory)
-//    .pause(1)
-//    .exec(Category.CyclePagesOfProducts)
-//    .pause(1)
-//    .exec(Products.LoadProductsDetailsPage)
-//    .pause(1)
-//    .exec(Products.AddProductToCart)
-//    .pause(1)
-//    .exec(Category.ProductListByCategory)
-//    .pause(1)
-//    .exec(Products.AddProductToCart)
-//    .pause(1)
-//    .exec(Products.AddProductToCart)
-//    .pause(1)
-//    .exec(Cart.ViewCart)
-//    .pause(1)
-//    .exec(session -> {
-//              System.out.println("*****CSRF_Token_LoggedIn: " + session.getString("pCSRF_Token_LoggedIn"));
-//              return session;
-//            }
-//    )
-//    .pause(1)
-//    .exec(Cart.IncreaseQuantityInCart)
-//    .pause(1)
-//    .exec(Cart.DecreaseQuantityInCart)
-//    .pause(1)
-//    .exec(Cart.DecreaseQuantityInCart)
-//    .pause(1)
-//      .exec(Cart.ViewCart)
-//    .exec(Cart.CheckoutCart)
-//    .pause(1)
-//    .exec(Customer.LogoutCustomer);
-
-
   {
-	  setUp(scn.injectOpen(atOnceUsers(1))).protocols(httpProtocol);
+    setUp(TestPopulation.ComplexInjection).protocols(httpProtocol).maxDuration(60)
   }
 }

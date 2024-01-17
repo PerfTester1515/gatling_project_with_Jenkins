@@ -8,7 +8,7 @@ public class StaticPages {
 
     public static ChainBuilder HomePage =
         exec(
-            http("01_LoadHomePage")
+            http("LoadHomePage")
             .get("/")
             .check(css("#_csrf", "content").saveAs("pCSRF_Token"))
             .check(status().is(200))
@@ -18,14 +18,14 @@ public class StaticPages {
 
     public static ChainBuilder OurStory =
         exec(
-            http("02_LoadStoryPage")
+            http("LoadStoryPage")
             .get("/our-story")
             .check(regex("founded online in \\d{4}"))
         );
 
     public static ChainBuilder GetInTouch =
         exec(
-            http("03_LoadGetInTouchPage")
+            http("LoadGetInTouchPage")
             .get("/get-in-touch")
             .check(substring("we are not actually a real store"))
         );

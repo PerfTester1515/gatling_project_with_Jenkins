@@ -15,14 +15,14 @@ public class Products {
 
     public static ChainBuilder LoadProductsDetailsPage =
             feed(ProductFeeder)
-            .exec(session -> {
-                    System.out.println("*****ProductInfo -  " + session.getString("dName") +
-                        ": " + session.getString("dSlug"));
-                    return session;
-                }
-            )
+//            .exec(session -> {
+//                    System.out.println("*****ProductInfo -  " + session.getString("dName") +
+//                        ": " + session.getString("dSlug"));
+//                    return session;
+//                }
+//            )
             .exec(
-                http("07_LoadProductsDetailsPage - Product: #{dName}")
+                http("LoadProductsDetailsPage")
                 .get("/product/#{dSlug}")
                 .check(css("#ProductDescription").isEL("#{dDescription}"))
             );
@@ -30,17 +30,10 @@ public class Products {
     public static ChainBuilder AddProductToCart =
              exec(IncreaseItemsInBasketForSession)
              .exec(
-                http("08_AddProductToCart - #{dName}")
+                http("AddProductToCart")
                 .get("/cart/add/#{dId}")
                 .check(substring("You have <span>#{sItemsInBasket}</span>"))   //
                     .check(bodyString().saveAs("sResponseBody"))
             )
-             .exec(IncreaseSessionBasketTotal)
-             .exec(session -> {
-                 System.out.println("*****ProductInfo -  " + session.getString("dName") +
-                     ": " + session.getString("dId"));
-                 System.out.println(session.getString("sResponseBody"));
-                 System.out.println(session);
-                 return session;
-             });
+             .exec(IncreaseSessionBasketTotal);
 }

@@ -10,7 +10,7 @@ public class Cart {
         doIf(session -> !session.getBoolean("sCustomerLoggedIn"))
         .then(exec(Customer.LoginCustomer))
         .exec(
-            http("12_ViewCart")
+            http("ViewCart")
             .get("/cart/view")
             .check(css("#CategoryHeader").is("Cart Overview"))
         );
@@ -19,24 +19,23 @@ public class Cart {
         exec(IncreaseItemsInBasketForSession)
         .exec(IncreaseSessionBasketTotal)
         .exec(
-            http("14_AddQuantityInCart - Product Name: #{dName}")
+            http("AddQuantityInCart")
             .get("/cart/add/#{dId}?cartPage=true")
             .check(css("#grandTotal").isEL("$#{sBasketTotal}"))
-        )
-        .exec(IncreaseSessionBasketTotal);
-
+        );
 
     public static  ChainBuilder DecreaseQuantityInCart =
         exec(DecreaseItemsInBasketForSession)
+        .exec(DecreaseSessionBasketTotal)
         .exec(
-            http("16_SubtractQuantityInCart - Product Name: #{dName}")
+            http("SubtractQuantityInCart")
             .get("/cart/subtract/#{dId}")
             .check(css("#grandTotal").isEL("$#{sBasketTotal}"))
         );
 
     public static  ChainBuilder CheckoutCart =
         exec(
-            http("17_CheckOut")
+            http("CheckOut")
             .get("/cart/checkout")
             .check(substring("products are on their way to you"))
         );

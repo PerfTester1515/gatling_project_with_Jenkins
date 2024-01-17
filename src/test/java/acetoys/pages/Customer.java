@@ -15,7 +15,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class Customer {
-    private static Iterator<Map<String,Object>> final LoginFeeder =
+    private static final Iterator<Map<String,Object>> LoginFeeder =
         Stream.generate((Supplier<Map<String, Object>>) () -> {
             Random rand = new Random();
             int vUserId = rand.nextInt(3)  + 1;
@@ -28,12 +28,12 @@ public class Customer {
 
     public static ChainBuilder LoginCustomer =
         feed(LoginFeeder)
-        .exec(session -> {
-            System.out.println("*****UserInfo -  " + session.getString("sUserId") +
-                ": " + session.getString("sPassword"));
-            return session;
-            }
-        )
+//        .exec(session -> {
+//            System.out.println("*****UserInfo -  " + session.getString("sUserId") +
+//                ": " + session.getString("sPassword"));
+//            return session;
+//            }
+//        )
         .exec (
             http("13_LoginUser")
             .post("/login")

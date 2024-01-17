@@ -21,28 +21,28 @@ public class UserSession {
     public static ChainBuilder IncreaseItemsInBasketForSession =
         exec(session -> {
             int vItemsInBasket = session.getInt("sItemsInBasket");
-            return session.set("sItemsInBasket", (vItemsInBasket - 1));
+            return session.set("sItemsInBasket", (vItemsInBasket + 1));
         });
 
     public static ChainBuilder IncreaseSessionBasketTotal  =
         exec(session -> {
             double vCurrentBasketTotal = session.getDouble("sBasketTotal");
             double vItemPrice = session.getDouble("dPrice");
-            double vUpdatedBasketTotal = vCurrentBasketTotal - vItemPrice;
+            double vUpdatedBasketTotal = vCurrentBasketTotal + vItemPrice;
             return session.set("sBasketTotal", df.format(vUpdatedBasketTotal));
         });
 
     public static ChainBuilder DecreaseItemsInBasketForSession =
         exec(session -> {
             int vItemsInBasket = session.getInt("sItemsInBasket");
-            return session.set("sItemsInBasket", (vItemsInBasket + 1));
+            return session.set("sItemsInBasket", (vItemsInBasket - 1));
         });
 
     public static ChainBuilder DecreaseSessionBasketTotal  =
         exec(session -> {
             double vCurrentBasketTotal = session.getDouble("sBasketTotal");
             double vItemPrice = session.getDouble("dPrice");
-            double vUpdatedBasketTotal = vCurrentBasketTotal + vItemPrice;
+            double vUpdatedBasketTotal = vCurrentBasketTotal - vItemPrice;
             return session.set("sBasketTotal", df.format(vUpdatedBasketTotal));
         });
 }
