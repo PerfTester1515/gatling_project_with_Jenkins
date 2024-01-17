@@ -7,18 +7,13 @@ package acetoys;
 //import acetoys.pages.Customer;
 
 
-import acetoys.session.UserSession;
 
 import acetoys.simulation.TestPopulation;
-import acetoys.simulation.TestScenario;
-import acetoys.simulation.UserJourney;
-import akka.actor.setup.Setup;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
-import io.gatling.javaapi.core.PopulationBuilder;
 
 public class AceToysSimulation extends Simulation {
 
@@ -34,6 +29,6 @@ public class AceToysSimulation extends Simulation {
   //cbg - Remove Header Maps
 
   {
-    setUp(TestPopulation.ComplexInjection).protocols(httpProtocol).maxDuration(60)
+    setUp(TestPopulation.ComplexInjection).protocols(httpProtocol).maxDuration(60);
   }
 }

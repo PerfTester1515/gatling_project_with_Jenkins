@@ -1,6 +1,5 @@
 package acetoys.simulation;
 
-import acetoys.session.UserSession;
 import io.gatling.javaapi.core.Choice;
 import io.gatling.javaapi.core.ScenarioBuilder;
 

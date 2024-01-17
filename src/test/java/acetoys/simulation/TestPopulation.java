@@ -9,7 +9,7 @@ public class TestPopulation {
             .injectOpen(
                 nothingFor(5),
                 atOnceUsers(10)
-            )
+            );
 
     public static PopulationBuilder RampUsers =
         TestScenario.DefaultLoadTest
