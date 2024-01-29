@@ -16,6 +16,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class AceToysSimulation extends Simulation {
+  private static final String TEST_TYPE = System.getProperty("TEST_TYPE", "INSTANT_USERS");
 
   private static final String DOMAIN = "acetoys.uk";
 
@@ -29,6 +30,14 @@ public class AceToysSimulation extends Simulation {
   //cbg - Remove Header Maps
 
   {
-    setUp(TestPopulation.ComplexInjection).protocols(httpProtocol).maxDuration(60);
+    if (TEST_TYPE == "INSTANT_USERS") {
+      setUp((TestPopulation.InstantUsers)).protocols(httpProtocol);
+    } else if (TEST_TYPE == "RAMP_USERS") {
+      setUp((TestPopulation.RampUsers)).protocols(httpProtocol);
+    } else if (TEST_TYPE == "COMPLEX_INJECTION") {
+      setUp((TestPopulation.RampUsers)).protocols(httpProtocol);
+    } else {
+      setUp((TestPopulation.InstantUsers)).protocols(httpProtocol);
+    }
   }
 }
