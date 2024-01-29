@@ -5,8 +5,11 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import java.time.Duration;
 
 public class TestPopulation {
-    private static final int USER_COUNT = Integer.parseInt(System.getProperty("Users", "5"));
-    private static final Duration RAMP_DURATION = Duration.ofSeconds(Integer.parseInt(System.getProperty("RAMP_DURATION", "10")));
+    //note:
+    // maven would require System.getProperty
+    // Jenkins would require System.getEnv - this does not allow default
+    private static final int USER_COUNT = Integer.parseInt(System.getenv("Users"));
+    private static final Duration RAMP_DURATION = Duration.ofSeconds(Integer.parseInt(System.getenv("RAMP_DURATION")));
     public static PopulationBuilder InstantUsers =
         TestScenario.DefaultLoadTest
             .injectOpen(

@@ -7,7 +7,10 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import java.time.Duration;
 
 public class TestScenario {
-    private static final Duration TEST_DURATION = Duration.ofSeconds(Integer.parseInt(System.getProperty("DURATION", "60")));
+    //note:
+    // maven would require System.getProperty
+    // Jenkins would require System.getEnv - this does not allow default
+    private static final Duration TEST_DURATION = Duration.ofSeconds(Integer.parseInt(System.getenv("DURATION")));
 
 
     public static ScenarioBuilder DefaultLoadTest =
